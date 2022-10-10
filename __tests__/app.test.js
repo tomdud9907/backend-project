@@ -23,4 +23,9 @@ describe("GET /api/topics", () => {
         })
         })
     })
-})
+    test("throws an error if route is wrong", () => {
+        return request(app).get("/api/banana").expect(404);
+      });
+    });
+
+    
