@@ -108,6 +108,8 @@ describe.only("PATCH /api/articles/:article_id", () => {
           votes: expect.any(Number)
         })
       )
+      expect(body.updatedArticle.votes).toBe(1);
+      expect(body.updatedArticle.article_id).toBe(11);
     })
   })
   test("should respond with status 400 if vote is not a number ", () => {
