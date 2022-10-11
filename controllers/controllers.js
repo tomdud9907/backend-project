@@ -1,6 +1,6 @@
 const { response } = require('../app');
 const app = require('../app')
-const {selectTopics, selectArticlesByID, selectUsers, updateVote} = require('../models/models')
+const {selectTopics, selectArticleByID, selectUsers, updateVote} = require('../models/models')
 
 
 function getTopics(request, response) {    
@@ -9,9 +9,9 @@ function getTopics(request, response) {
     })
 }
 
-function getArticlesByID (request, response, next) {
+function getArticleByID (request, response, next) {
     const { article_id } = request.params
-    selectArticlesByID(article_id)
+    selectArticleByID(article_id)
     .then((article) => {
         response.status(200).send({article: article})
     })
@@ -30,7 +30,9 @@ function getUsers(request, response, next) {
 }
 
 function patchUpdateVote (req, res, next) {
-    updateVote(req.body, req.params)
+  const article_id = req.params
+  const newVote = req.body
+    updateVote(newVote, article_id)
       .then((updatedArticle) => {
         res.status(201).send({ updatedArticle })
      })
@@ -39,4 +41,4 @@ function patchUpdateVote (req, res, next) {
       })
   }
 
-module.exports = {getTopics, getArticlesByID, getUsers, patchUpdateVote}
+module.exports = {getTopics, getArticleByID, getUsers, patchUpdateVote}

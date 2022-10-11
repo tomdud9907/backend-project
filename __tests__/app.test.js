@@ -90,7 +90,7 @@ describe("GET /api/users", () => {
     })
 })
 
-describe.only("PATCH /api/articles/:article_id", () => {
+describe("PATCH /api/articles/:article_id", () => {
   test('response with an updated inc_vote in the updated article', () => {
     return request(app)
     .patch("/api/articles/11")
@@ -139,4 +139,13 @@ describe.only("PATCH /api/articles/:article_id", () => {
         expect(body.msg).toBe("Invalid input")
       })
 })
+test("should respond with status 400 & bad request when the passed object is empty ", () => {
+  return request(app)
+    .patch("/api/articles/11")
+    .send({})
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request");
+    });
+});
 })

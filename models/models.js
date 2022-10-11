@@ -7,7 +7,7 @@ function selectTopics () {
   })
 }
 
-function selectArticlesByID (article_id) {
+function selectArticleByID (article_id) {
   return db.query(`SELECT * FROM articles WHERE article_id=$1;`, [article_id])
   .then(({ rows }) => {
     const article = rows[0]
@@ -50,7 +50,7 @@ function updateVote (votes, articleId) {
     })
 }
 
-module.exports = {selectTopics, selectArticlesByID, selectUsers, updateVote}
+module.exports = {selectTopics, selectArticleByID, selectUsers, updateVote}
 
 
 

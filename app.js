@@ -1,6 +1,6 @@
 const express = require("express");
 const { getTopics, 
-  getArticlesByID, 
+  getArticleByID, 
   getUsers, 
   patchUpdateVote} = require('./controllers/controllers')
 
@@ -10,7 +10,7 @@ app.use(express.json())
 
 app.get('/api/topics', getTopics)
 
-app.get('/api/articles/:article_id', getArticlesByID)
+app.get('/api/articles/:article_id', getArticleByID)
 
 app.get('/api/users', getUsers)
 
