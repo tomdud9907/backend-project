@@ -1,6 +1,6 @@
 const { response } = require('../app');
 const app = require('../app')
-const {selectTopics, selectArticlesByID} = require('../models/models')
+const {selectTopics, selectArticlesByID, selectUsers} = require('../models/models')
 
 
 function getTopics(request, response) {    
@@ -18,10 +18,15 @@ function getArticlesByID (request, response, next) {
     .catch((err) => {
         next(err);
       });
+}
 
+function getUsers(request, response) {    
+    selectUsers().then((users) => {        
+        response.status(200).send({ users });
+    })
 }
 
 
-module.exports = {getTopics, getArticlesByID}
+module.exports = {getTopics, getArticlesByID, getUsers}
 
 //eksportujemy i dodajemy poszczegolne funkcje do linii 2
