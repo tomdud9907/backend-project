@@ -1,11 +1,15 @@
 const express = require("express");
-const { getTopics, getArticlesByID } = require('./controllers/controllers')
+const { getTopics, 
+  getArticlesByID, 
+  getUsers } = require('./controllers/controllers')
 const app = express();
 app.use(express.json())
 
 app.get('/api/topics', getTopics)
 
 app.get('/api/articles/:article_id', getArticlesByID)
+
+app.get('/api/users', getUsers)
 
 
 app.use((err, req, res, next) => {
@@ -21,3 +25,5 @@ app.use((err, req, res, next) => {
 
 
 module.exports = app
+
+// git checkout -B 

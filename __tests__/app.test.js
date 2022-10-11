@@ -29,9 +29,9 @@ describe("GET /api/topics", () => {
       });
     });
 
-    describe("GET /api/articles/:article_id", () => {
-        test("should respond with an object with the properties: author, title, article_id, body,topic,created_at & votes.", () => {
-          return request(app)
+describe("GET /api/articles/:article_id", () => {
+    test("should respond with an object with the properties: author, title, article_id, body,topic,created_at & votes.", () => {
+      return request(app)
             .get(`/api/articles/11`)
             .expect(200)
             .then(({ body }) => {
@@ -66,7 +66,47 @@ describe("GET /api/topics", () => {
               expect(body.msg).toBe("Invalid input");
             });
         });
+});
+describe("GET /api/topics", () => {
+    test('respond with an array of topic objects', () => {
+        return request(app)
+        .get('/api/topics')
+        .expect(200)
+        .then (({body}) => {
+        const { topics } = body
+        topics.forEach(topic => {
+            expect(topic).toEqual(
+                expect.objectContaining({
+                    description: expect.any(String),
+                    slug: expect.any(String),
+                })
+            )
+        })
+        })
+    })
+    test("throws an error if route is wrong", () => {
+        return request(app).get("/api/banana").expect(404);
       });
-    
-
-    
+});  
+describe("GET /api/users", () => {
+  test('respond with an array of users objects', () => {
+      return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then (({body}) => {
+      const { users } = body
+      users.forEach(user => {
+          expect(user).toEqual(
+              expect.objectContaining({
+                  username: expect.any(String),
+                  name: expect.any(String),
+                  avatar_url: expect.any(String)
+              })
+          )
+      })
+      })
+  })
+  test("throws an error if route is wrong", () => {
+      return request(app).get("/api/banana").expect(404);
+    });
+  });
