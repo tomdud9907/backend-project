@@ -54,21 +54,45 @@ function updateVote (votes, articleId) {
     })
 }
 
-function selectArticles (order) {
-  if (!order) order = 'created_at'
-  return db
-  .query
-  (`SELECT articles.*, 
-  COUNT(comment_id) ::INT AS 
-  comment_count FROM articles 
-  LEFT JOIN comments ON 
-  comments.article_id = articles.article_id 
-  GROUP BY articles.article_id
-  ORDER BY ${order} DESC;`)
-  .then(({ rows })=> {
-    return rows
+function selectArticles (sort_by = 'created_at', topic) {
+  const validSorting = [
+    "article_id",
+    "author",
+    "title",
+    "topic",
+    "created_at",
+    "votes"
+  ]
+  const validTopics = ["cats", "paper", "mitch"]
+  if (topic && !validTopics.includes(topic)) {
+    return Promise.reject({ status: 404, msg: `no ${topic} found` })
+  }
+
+  if (!validSorting.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Invalid sort query" })
+  }
+
+  let queryStr = `
+        SELECT  
+        articles.*,
+        COUNT (comment_id)::INT AS comment_count
+        FROM articles
+        LEFT JOIN comments
+        ON articles.article_id = comments.article_id`
+
+  const queryArr = [];
+
+  if (topic) {
+    queryStr += ` WHERE topic = $1`
+    queryArr.push(topic)
+  }
+
+  queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} DESC;`
+  return db.query(queryStr, queryArr).then(({ rows: articles }) => {
+    return articles
   })
 }
+
 
 module.exports = {selectTopics, selectArticleByID, selectUsers, updateVote, selectArticles}
 

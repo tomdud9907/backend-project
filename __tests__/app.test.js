@@ -198,6 +198,7 @@ describe.only('GET api/articles', () => {
     .expect(200)
     .then(({ body }) => {
       const { articles } = body
+      expect(articles.length).toBe(12)
       articles.forEach((article) => {
         expect(article.hasOwnProperty("author"))
         expect(article.hasOwnProperty("title"))
@@ -219,11 +220,27 @@ describe.only('GET api/articles', () => {
   })
   test('articles are sorted by topic in descending order if we change a query', () => {
     return request(app)
-    .get('/api/articles?order=topic')
+    .get('/api/articles?topic=mitch')
     .expect(200)
     .then (({ body }) => {
       expect(body.articles).toBeSortedBy('topic', {descending: true})
     })
+  })
+  test('should respond with an "Invalid sort query" message for an invalid query', () => {
+    return request(app)
+      .get("/api/articles?sort_by=ushdhjbowejhfb")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid sort query");
+      })
+  })
+  test('should respond with an "no topic found" message for an invalid topic', () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`no banana found`);
+      })
   })
 })
 
