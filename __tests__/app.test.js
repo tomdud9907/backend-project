@@ -191,3 +191,39 @@ describe("GET /api/articles/:article_id", () => {
       })
   })
 })
+describe.only('GET api/articles', () => {
+  test('respond with an array with articles object', () => {
+    return request(app)
+    .get('/api/articles')
+    .expect(200)
+    .then(({ body }) => {
+      const { articles } = body
+      articles.forEach((article) => {
+        expect(article.hasOwnProperty("author"))
+        expect(article.hasOwnProperty("title"))
+        expect(article.hasOwnProperty("article_id"))
+        expect(article.hasOwnProperty("topic"))
+        expect(article.hasOwnProperty("created_at"))
+        expect(article.hasOwnProperty("votes"))
+        expect(article.hasOwnProperty("comment_count"))
+      })
+    })
+  })
+  test('articles are sorted by created_at in descending order by default', () => {
+    return request(app)
+    .get('/api/articles')
+    .expect(200)
+    .then (({ body }) => {
+      expect(body.articles).toBeSortedBy('created_at', {descending: true})  //jest-sorted install required if issues please follow this link https://www.npmjs.com/package/jest-sorted  
+    })
+  })
+  test('articles are sorted by topic in descending order if we change a query', () => {
+    return request(app)
+    .get('/api/articles?order=topic')
+    .expect(200)
+    .then (({ body }) => {
+      expect(body.articles).toBeSortedBy('topic', {descending: true})
+    })
+  })
+})
+

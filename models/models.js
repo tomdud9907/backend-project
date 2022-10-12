@@ -54,7 +54,23 @@ function updateVote (votes, articleId) {
     })
 }
 
-module.exports = {selectTopics, selectArticleByID, selectUsers, updateVote}
+function selectArticles (order) {
+  if (!order) order = 'created_at'
+  return db
+  .query
+  (`SELECT articles.*, 
+  COUNT(comment_id) ::INT AS 
+  comment_count FROM articles 
+  LEFT JOIN comments ON 
+  comments.article_id = articles.article_id 
+  GROUP BY articles.article_id
+  ORDER BY ${order} DESC;`)
+  .then(({ rows })=> {
+    return rows
+  })
+}
+
+module.exports = {selectTopics, selectArticleByID, selectUsers, updateVote, selectArticles}
 
 
 
