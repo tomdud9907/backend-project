@@ -191,3 +191,56 @@ describe("GET /api/articles/:article_id", () => {
       })
   })
 })
+describe.only('GET api/articles', () => {
+  test('respond with an array with articles object', () => {
+    return request(app)
+    .get('/api/articles')
+    .expect(200)
+    .then(({ body }) => {
+      const { articles } = body
+      expect(articles.length).toBe(12)
+      articles.forEach((article) => {
+        expect(article.hasOwnProperty("author"))
+        expect(article.hasOwnProperty("title"))
+        expect(article.hasOwnProperty("article_id"))
+        expect(article.hasOwnProperty("topic"))
+        expect(article.hasOwnProperty("created_at"))
+        expect(article.hasOwnProperty("votes"))
+        expect(article.hasOwnProperty("comment_count"))
+      })
+    })
+  })
+  test('articles are sorted by created_at in descending order by default', () => {
+    return request(app)
+    .get('/api/articles')
+    .expect(200)
+    .then (({ body }) => {
+      expect(body.articles).toBeSortedBy('created_at', {descending: true})  //jest-sorted install required if issues please follow this link https://www.npmjs.com/package/jest-sorted  
+    })
+  })
+  test('articles are sorted by topic in descending order if we change a query', () => {
+    return request(app)
+    .get('/api/articles?topic=mitch')
+    .expect(200)
+    .then (({ body }) => {
+      expect(body.articles).toBeSortedBy('topic', {descending: true})
+    })
+  })
+  test('should respond with an "Invalid sort query" message for an invalid query', () => {
+    return request(app)
+      .get("/api/articles?sort_by=ushdhjbowejhfb")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid sort query");
+      })
+  })
+  test('should respond with an "no topic found" message for an invalid topic', () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`no banana found`);
+      })
+  })
+})
+
