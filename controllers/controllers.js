@@ -5,7 +5,8 @@ const {selectTopics,
   selectUsers, 
   updateVote,
   selectArticles,
-  selectCommentsByArticleId} = require('../models/models')
+  selectCommentsByArticleId,
+  insertComment} = require('../models/models')
 
 
 function getTopics(request, response) {    
@@ -44,9 +45,9 @@ function patchUpdateVote (request, response, next) {
       .catch((err) => {
         next(err)
       })
-  }
+}
 
-  function getArticles (request, response, next) {
+function getArticles (request, response, next) {
     const { topic, sort_by } = request.query
     selectArticles(sort_by, topic).then((articles) => {        
       response.status(200).send({ articles })     
@@ -67,4 +68,19 @@ function getCommentsByArticleId (request, response, next) {
   })
 }
 
-module.exports = {getTopics, getArticleByID, getUsers, patchUpdateVote, getArticles, getCommentsByArticleId}
+function postComment (request, response, next) {
+  const { article_id } = request.params;
+  const { username, body} = request.body;
+  insertComment(body, username, article_id)
+    .then((comment) => {
+      console.log(comment)
+      response.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err)
+    })
+}
+
+
+
+module.exports = {getTopics, getArticleByID, getUsers, patchUpdateVote, getArticles, getCommentsByArticleId, postComment}

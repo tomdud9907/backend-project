@@ -4,7 +4,8 @@ const { getTopics,
   getUsers, 
   patchUpdateVote,
   getArticles,
-  getCommentsByArticleId} = require('./controllers/controllers')
+  getCommentsByArticleId,
+  postComment} = require('./controllers/controllers')
 
 const app = express()
 
@@ -22,8 +23,10 @@ app.get('/api/articles', getArticles)
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
+app.post('/api/articles/:article_id/comments', postComment)
+
 app.use((err, req, res, next) => {
-    if (err.code === "22P02" ) { //22p02- invalid input syntax
+    if (err.code === "22P02" || err.code === '23502' || err.code === '23503') { //22p02- invalid input syntax
       res.status(400).send({ msg: "Invalid input" })
     } else if (err.status && err.msg) {
       res.status(err.status).send({ msg: err.msg })
