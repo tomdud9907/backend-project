@@ -48,8 +48,8 @@ function patchUpdateVote (request, response, next) {
 }
 
 function getArticles (request, response, next) {
-    const { topic, sort_by } = request.query
-    selectArticles(sort_by, topic).then((articles) => {        
+    const { sort_by, order, topic} = request.query
+    selectArticles(sort_by, order, topic).then((articles) => {        
       response.status(200).send({ articles })     
   })
   .catch((err) => {
