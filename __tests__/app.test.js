@@ -280,3 +280,72 @@ describe("Get /api/articles/:article_id/comments", () => {
       })
   })
 })
+describe("POST /api/articles/:article_id/", () => {
+  test("should respond with a status 201 and the newly added comment", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Wow, what a fantastic page",
+    };
+    return request(app)
+      .post("/api/articles/8/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            author: "butter_bridge",
+            body: "Wow, what a fantastic page",
+            comment_id: 19,
+            votes: 0,
+            article_id: 8,
+          })
+        )
+      })
+  })
+  test('should respond with a status 400 and "invalid input" when passed an invalid article_id', () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Wow, what a fantastic page",
+    }
+    return request(app)
+      .post("/api/articles/ljhbsdkjhb/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input")
+      })
+  })
+  test('should respond with a status 400 and "Invalid input" when passed a comment by an invalid username ', () => {
+    const newComment = {
+      username: "riasdasdvkjhkfdi",
+      body: "Wow, what a fantastic page",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input")
+      })
+  })
+  test('should respong with a status 400 and "Invalid input" when passed an empty comment ', () => {
+    const newComment = {}
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input")
+      })
+  })
+  test('should respond with a status 400 and "Invalid input" when passed comment is missing a body ', () => {
+    const newComment = { username: "butter_bridge" }
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input")
+      })
+  })
+})
