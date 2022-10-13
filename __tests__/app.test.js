@@ -191,7 +191,7 @@ describe("GET /api/articles/:article_id", () => {
       })
   })
 })
-describe.only('GET api/articles', () => {
+describe('GET api/articles', () => {
   test('respond with an array with articles object', () => {
     return request(app)
     .get('/api/articles')
@@ -243,4 +243,40 @@ describe.only('GET api/articles', () => {
       })
   })
 })
-
+describe("Get /api/articles/:article_id/comments", () => {
+  test('should response with an array of comments for given article id', () => {
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then (({ body }) => {
+      const { comments } = body
+      expect(comments).toBeInstanceOf(Array)
+      expect(comments.length).toBe(11)
+      comments.forEach((comment) => {
+        expect(comment.hasOwnProperty("comment_id"))
+        expect(comment.hasOwnProperty("votes"))
+        expect(comment.hasOwnProperty("created_at"))
+        expect(comment.hasOwnProperty("author"))
+        expect(comment.hasOwnProperty("body"))
+        expect(comment.hasOwnProperty("article_id"))
+      })
+    })
+  })
+  test("should return an empty array when passing a valid ID has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body
+        expect(comments).toEqual([])
+      })
+  })
+  test('status: 400 - responds with "invalid input" for invalid article_id', () => {
+    return request(app)
+      .get("/api/articles/banana/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      })
+  })
+})

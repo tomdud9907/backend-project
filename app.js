@@ -3,9 +3,10 @@ const { getTopics,
   getArticleByID, 
   getUsers, 
   patchUpdateVote,
-  getArticles} = require('./controllers/controllers')
+  getArticles,
+  getCommentsByArticleId} = require('./controllers/controllers')
 
-const app = express();
+const app = express()
 
 app.use(express.json())
 
@@ -19,9 +20,10 @@ app.patch('/api/articles/:article_id', patchUpdateVote)
 
 app.get('/api/articles', getArticles)
 
+app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
 app.use((err, req, res, next) => {
-    if (err.code === "22P02") { //22p02- invalid input syntax
+    if (err.code === "22P02" ) { //22p02- invalid input syntax
       res.status(400).send({ msg: "Invalid input" })
     } else if (err.status && err.msg) {
       res.status(err.status).send({ msg: err.msg })
