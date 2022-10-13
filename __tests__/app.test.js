@@ -357,27 +357,27 @@ describe("GET /api/articles (queries)", () => {
       .then((response) => {
         expect(response.body.articles).toBeSortedBy("author", {
           descending: true,
-        });
-      });
-  });
+        })
+      })
+  })
 
   test('should respond with an "Invalid sort query" message for an invalid query', () => {
     return request(app)
       .get("/api/articles?sort_by=ushdhjbowejhfb")
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Invalid sort query");
-      });
-  });
+        expect(msg).toBe("Invalid sort query")
+      })
+  })
 
   test('should respond with an "Invalid order query" message for an invalid order', () => {
     return request(app)
       .get("/api/articles?order=kjhbkjdfh")
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Invalid order query");
-      });
-  });
+        expect(msg).toBe("Invalid order query")
+      })
+  })
 
   test("should work with an order query", () => {
     return request(app)
@@ -386,26 +386,25 @@ describe("GET /api/articles (queries)", () => {
       .then((response) => {
         expect(response.body.articles).toBeSortedBy("topic", {
           ascending: true,
-        });
-      });
-  });
+        })
+      })
+  })
 
   test("status: 200 - accepts order query", () => {
     return request(app)
       .get("/api/articles?sort_by=article_id&order=ASC")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles).toBeSortedBy("article_id", { ascending: true });
-      });
-  });
+        expect(articles).toBeSortedBy("article_id", { ascending: true })
+      })
+  })
 
   test("should return articles filtered by topic", () => {
-    return request(app)
-      .get("/api/articles?topic=mitch")
+      return request(app)
+      .get('/api/articles?topic=mitch')
       .expect(200)
-      .then((response) => {
-        expect(response.body.articles).toHaveLength(11);
-        expect(response.body.articles[0].topic).toEqual("mitch");
-      });
-  });
-});
+      .then (({ body }) => {
+        expect(body.articles).toBeSortedBy('topic', {descending: true})
+      })
+    })
+})
