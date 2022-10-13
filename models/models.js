@@ -54,7 +54,7 @@ function updateVote (votes, articleId) {
     })
 }
 
-function selectArticles (sort_by = 'created_at', topic) {
+function selectArticles (sort_by = 'created_at', order = 'DESC', topic) {
   const validSorting = [
     "article_id",
     "author",
@@ -63,6 +63,8 @@ function selectArticles (sort_by = 'created_at', topic) {
     "created_at",
     "votes"
   ]
+  const validOrdering = ["ASC", "DESC"]
+  
   const validTopics = ["cats", "paper", "mitch"]
   if (topic && !validTopics.includes(topic)) {
     return Promise.reject({ status: 404, msg: `no ${topic} found` })
@@ -70,6 +72,9 @@ function selectArticles (sort_by = 'created_at', topic) {
 
   if (!validSorting.includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "Invalid sort query" })
+  }
+  if (!validOrdering.includes(order)) {
+    return Promise.reject({ status: 400, msg: 'Invalid order query'})
   }
 
   let queryStr = `
@@ -87,7 +92,7 @@ function selectArticles (sort_by = 'created_at', topic) {
     queryArr.push(topic)
   }
 
-  queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} DESC;`
+  queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`
   return db.query(queryStr, queryArr).then(({ rows: articles }) => {
     return articles
   })
