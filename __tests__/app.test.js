@@ -408,3 +408,19 @@ describe("GET /api/articles (queries)", () => {
       })
     })
 })
+describe("DELETE /api/comments/:comment_id", () => {
+  test("should respond with a 204 and delete the comment for the id provided", () => {
+    return request(app)
+      .delete(`/api/comments/2`)
+      .expect(204)
+      .then(() => {})
+  })
+  test('should respond 404 if comment_id doesnt exist', () => {
+    return request(app)
+    .delete('/api/comments/999')
+    .expect(404)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe('comment doesnt exist')
+    })
+  })
+})

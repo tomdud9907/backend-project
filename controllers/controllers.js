@@ -6,7 +6,8 @@ const {selectTopics,
   updateVote,
   selectArticles,
   selectCommentsByArticleId,
-  insertComment} = require('../models/models')
+  insertComment,
+  removeCommentById} = require('../models/models')
 
 
 function getTopics(request, response) {    
@@ -81,6 +82,18 @@ function postComment (request, response, next) {
     })
 }
 
+function deleteCommentById (request, response, next) {
+  const{ comment_id } = request.params
+  removeCommentById(comment_id)
+  .then(() => {
+    response.status(204).send('No content')
+  })
+  .catch((err) => {
+    next(err)
+  })
+}
 
 
-module.exports = {getTopics, getArticleByID, getUsers, patchUpdateVote, getArticles, getCommentsByArticleId, postComment}
+
+module.exports = {getTopics, getArticleByID, getUsers, patchUpdateVote, getArticles, getCommentsByArticleId, postComment, deleteCommentById}
+
