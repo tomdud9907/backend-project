@@ -28,10 +28,6 @@ app.post('/api/articles/:article_id/comments', postComment)
 
 app.delete('/api/comments/:comment_id', deleteCommentById)
 
-app.all("/*", (req, res, next) => {
-  res.status(404).send({ msg: "Invalid URL" })
-})
-
 app.use((err, req, res, next) => {
     if (err.code === "22P02" || err.code === '23502' || err.code === '23503') { //22p02- invalid input syntax
       res.status(400).send({ msg: "Invalid input" })
