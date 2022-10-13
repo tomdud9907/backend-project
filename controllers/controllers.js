@@ -1,6 +1,11 @@
 const { response } = require('../app');
 const app = require('../app')
-const {selectTopics, selectArticleByID, selectUsers, updateVote, selectArticles} = require('../models/models')
+const {selectTopics, 
+  selectArticleByID, 
+  selectUsers, 
+  updateVote,
+  selectArticles,
+  selectCommentsByArticleId} = require('../models/models')
 
 
 function getTopics(request, response) {    
@@ -30,11 +35,11 @@ function getUsers(request, response, next) {
 }
 
 function patchUpdateVote (request, response, next) {
-  const article_id = req.params
-  const newVote = req.body
+  const article_id = request.params
+  const newVote = request.body
     updateVote(newVote, article_id)
       .then((updatedArticle) => {
-        res.status(201).send({ updatedArticle })
+        response.status(201).send({ updatedArticle })
      })
       .catch((err) => {
         next(err)
@@ -51,4 +56,15 @@ function patchUpdateVote (request, response, next) {
   })
 }
 
-module.exports = {getTopics, getArticleByID, getUsers, patchUpdateVote, getArticles}
+function getCommentsByArticleId (request, response, next) {
+  const { article_id } = request.params
+  selectCommentsByArticleId(article_id)
+  .then((comments) => {
+    response.status(200).send({ comments })
+  })
+  .catch((err) => {
+    next(err)
+  })
+}
+
+module.exports = {getTopics, getArticleByID, getUsers, patchUpdateVote, getArticles, getCommentsByArticleId}

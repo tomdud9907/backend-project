@@ -80,7 +80,7 @@ function selectArticles (sort_by = 'created_at', topic) {
         LEFT JOIN comments
         ON articles.article_id = comments.article_id`
 
-  const queryArr = [];
+  const queryArr = []
 
   if (topic) {
     queryStr += ` WHERE topic = $1`
@@ -93,8 +93,15 @@ function selectArticles (sort_by = 'created_at', topic) {
   })
 }
 
+function selectCommentsByArticleId (article_id) {
+  return db.query('SELECT * FROM comments WHERE article_id=$1;', [article_id])
+  .then (({ rows }) => {
+    return rows
+  })
+}
 
-module.exports = {selectTopics, selectArticleByID, selectUsers, updateVote, selectArticles}
+
+module.exports = {selectTopics, selectArticleByID, selectUsers, updateVote, selectArticles, selectCommentsByArticleId}
 
 
 
