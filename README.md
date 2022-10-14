@@ -1,1 +1,3 @@
 Create a .env.development file and a .env.test file, where you will declare PGDATABASE=nc_news and PGDATABASE=nc_news_test respectively...
+
+hosted version of app https://nc-njus.herokuapp.com/api
