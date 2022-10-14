@@ -1,5 +1,6 @@
 const { response } = require('../app');
 const app = require('../app')
+const fs = require("fs");
 const {selectTopics, 
   selectArticleByID, 
   selectUsers, 
@@ -8,6 +9,14 @@ const {selectTopics,
   selectCommentsByArticleId,
   insertComment,
   removeCommentById} = require('../models/models')
+
+ function getApi (req, res, next) {
+   fs.readFile("endpoints.json", "utf8", function (err, data) {
+    console.log(data)
+    let allEndpoints = JSON.parse(data)
+    res.status(200).send(allEndpoints)
+    })
+}
 
 
 function getTopics(request, response) {    
@@ -74,7 +83,6 @@ function postComment (request, response, next) {
   const { username, body} = request.body;
   insertComment(body, username, article_id)
     .then((comment) => {
-      console.log(comment)
       response.status(201).send({ comment });
     })
     .catch((err) => {
@@ -95,5 +103,5 @@ function deleteCommentById (request, response, next) {
 
 
 
-module.exports = {getTopics, getArticleByID, getUsers, patchUpdateVote, getArticles, getCommentsByArticleId, postComment, deleteCommentById}
+module.exports = {getTopics, getArticleByID, getUsers, patchUpdateVote, getArticles, getCommentsByArticleId, postComment, deleteCommentById, getApi}
 
