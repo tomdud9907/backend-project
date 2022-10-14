@@ -6,7 +6,8 @@ const { getTopics,
   getArticles,
   getCommentsByArticleId,
   postComment,
-  deleteCommentById} = require('./controllers/controllers')
+  deleteCommentById,
+  getApi} = require('./controllers/controllers')
 
 const app = express()
 
@@ -27,6 +28,8 @@ app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 app.post('/api/articles/:article_id/comments', postComment)
 
 app.delete('/api/comments/:comment_id', deleteCommentById)
+
+app.get('/api', getApi)
 
 app.use((err, req, res, next) => {
     if (err.code === "22P02" || err.code === '23502' || err.code === '23503') { //22p02- invalid input syntax
