@@ -68,6 +68,7 @@ function selectArticles(sort_by = "created_at", order = "DESC", topic) {
     "topic",
     "created_at",
     "votes",
+    "comment_count",
   ];
   const validOrdering = ["ASC", "DESC"];
 
